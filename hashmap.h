@@ -21,7 +21,7 @@ typedef struct {
 } hashmap_t;
 
 boolean add_pair(hashmap_t *hashmap, int key, char *value);
-char *get_value(hashmap_t *hashmap, int key);
 void print_hashmap(hashmap_t *hashmap);
 hashmap_t *init_hashmap();
+char* get_value(hashmap_t *hashmap, int key);
 

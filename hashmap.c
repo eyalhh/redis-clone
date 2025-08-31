@@ -1,7 +1,8 @@
 #include "hashmap.h"
 
 int hash(int key, int cap) {
-    return key % cap;
+    // as for numeric value
+    return key % cap-1;
 }
 
 hashmap_t *init_hashmap() {
@@ -40,8 +41,17 @@ boolean add_pair(hashmap_t *hashmap, int key, char *value) {
     
 }
 
-char *get_value(hashmap_t *hashmap, int key) {
-
+char* get_value(hashmap_t *hashmap, int key) {
+    entry_t* ent = hashmap->arr[hash(key, hashmap->cap)]; // getting the right entry chain
+  
+    //going over the chain to look for the right key
+    while(TRUE){
+      if(ent==NULL) // in case of some wrongdoing
+        return NULL; 
+      if(ent->key == key)
+        return ent->value;
+      ent = ent->next;
+    }
 }
 
 void print_hashmap(hashmap_t *hashmap) {
