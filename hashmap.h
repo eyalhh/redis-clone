@@ -24,4 +24,5 @@ boolean add_pair(hashmap_t *hashmap, int key, char *value);
 void print_hashmap(hashmap_t *hashmap);
 hashmap_t *init_hashmap();
 char* get_value(hashmap_t *hashmap, int key);
+void del_key(hashmap_t *hashmap, int key);
 
