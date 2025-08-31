@@ -1,23 +1,4 @@
-#include <stdlib.h>
-#include <unistd.h>
-
-#define INITIAL_SIZE 100
-#define TRUE 1
-#define FALSE 0
-
-typedef int bool;
-
-typedef struct entry_s{
-    int key;
-    char *value;
-    struct entry_s *next;
-} entry_t;
-
-typedef struct {
-    int len;
-    int cap;
-    entry_t **arr;
-} hashmap_t;
+#include "hashmap.h"
 
 int hash(int key, int cap) {
     return key % cap;
@@ -36,7 +17,7 @@ entry_t *new_entry(int key, char *value) {
     return new;
 }
 
-bool add_pair(hashmap_t *hashmap, int key, char *value) {
+boolean add_pair(hashmap_t *hashmap, int key, char *value) {
     if (hashmap->len == hashmap->cap) {
         hashmap->cap *= 2;
         hashmap->arr = calloc(hashmap->cap, sizeof(entry_t *));
@@ -55,6 +36,7 @@ bool add_pair(hashmap_t *hashmap, int key, char *value) {
     
 }
 
-bool get_value(hashmap_t *hashmap, int key) {
+boolean get_value(hashmap_t *hashmap, int key) {
+    return 1;
 
 }
