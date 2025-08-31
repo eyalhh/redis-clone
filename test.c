@@ -9,6 +9,6 @@ void test() {
     print_hashmap(hashmap);
     char *name = get_value(hashmap, 212);
     printf("%s\n", name);
-    name = get_value(hashmap, 2000);
+    name = get_value(hashmap, 2020);
 
 }

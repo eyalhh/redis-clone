@@ -2,7 +2,7 @@
 
 int hash(int key, int cap) {
     // as for numeric value
-    return key % cap-1;
+    return key % cap;
 }
 
 hashmap_t *init_hashmap() {
