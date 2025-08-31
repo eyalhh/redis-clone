@@ -5,8 +5,8 @@ int main_loop();
 
 int main() {
 
-    main_loop();
-    return 0;
+   main_loop();
+   return 0;
 }
 
 int main_loop(){

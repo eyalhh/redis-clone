@@ -2,7 +2,7 @@
 
 int hash(int key, int cap) {
     // as for numeric value
-    return key % cap-1;
+    return key % cap;
 }
 
 hashmap_t *init_hashmap() {
@@ -54,6 +54,22 @@ char* get_value(hashmap_t *hashmap, int key) {
     }
 }
 
+void del_key(hashmap_t *hashmap, int key) {
+    entry_t *first_entry = hashmap->arr[hash(key, hashmap->cap)];
+    if (first_entry == NULL || first_entry->key == key) {
+        hashmap->arr[hash(key, hashmap->cap)] = NULL;
+        return;
+    }
+    while (first_entry != NULL) {
+        if (first_entry->next != NULL & first_entry->next->key == key) {
+            entry_t *del_entry = first_entry->next;
+            first_entry->next = first_entry->next->next;
+            free(del_entry);
+            return;
+        }
+    }
+}
+
 void print_hashmap(hashmap_t *hashmap) {
     printf("{");
     for (int i = 0; i < hashmap->cap; i++) {
@@ -66,3 +82,4 @@ void print_hashmap(hashmap_t *hashmap) {
     }
     printf("}\n");
 }
+
