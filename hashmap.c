@@ -4,10 +4,12 @@ int hash(int key, int cap) {
     return key % cap;
 }
 
-void init_hashmap(hashmap_t *hashmap) {
+hashmap_t *init_hashmap() {
+    hashmap_t *hashmap = malloc(sizeof(hashmap_t));
     hashmap->cap = INITIAL_SIZE;
     hashmap->len = 0;
     hashmap->arr = calloc(hashmap->cap, sizeof(entry_t *));
+    return hashmap;
 }
 
 entry_t *new_entry(int key, char *value) {
