@@ -1,4 +1,4 @@
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -21,5 +21,6 @@ typedef struct {
 } hashmap_t;
 
 boolean add_pair(hashmap_t *hashmap, int key, char *value);
-boolean get_value(hashmap_t *hashmap, int key);
+char *get_value(hashmap_t *hashmap, int key);
+void print_hashmap(hashmap_t *hashmap);
 
