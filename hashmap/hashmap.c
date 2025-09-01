@@ -87,9 +87,6 @@ void del_key(hashmap_t *hashmap, char *key) {
 }
 
 void print_hashmap(hashmap_t *hashmap) {
-    printf("%d\n", (int)hash((unsigned char*)"OMG", hashmap->cap));
-    printf("%d\n", (int)hash((unsigned char*)"WOW", hashmap->cap));
-    printf("%d\n", (int)hash((unsigned char*)"THIS", hashmap->cap));
     int count = 0;
     printf("{");
     for (int i = 0; i < hashmap->cap; i++) {
