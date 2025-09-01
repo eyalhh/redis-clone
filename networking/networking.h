@@ -3,5 +3,5 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LISTENERES 10
+#define MAX_LISTENERS 10
 
