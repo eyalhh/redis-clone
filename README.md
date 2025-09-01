@@ -33,13 +33,13 @@ make
 
 ### 4. Try it out
 
-> SET foo bar
+SET foo bar
 OK
-> GET foo
+GET foo
 bar
-> DEL foo
+DEL foo
 (1)
-> GET foo
+GET foo
 (nil)
 
 ## 🛠 Roadmap
