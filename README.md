@@ -17,7 +17,7 @@ This project is an **MVP (minimum viable product)** implementation meant for lea
 
 ### 1. Clone the repo
 
-git clone https://github.com/your-username/redis-clone.git
+git clone https://github.com/eyalhh/redis-clone.git
 cd redis-clone
 
 
