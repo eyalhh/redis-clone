@@ -33,14 +33,14 @@ make
 
 ### 4. Try it out
 
-SET foo bar
-OK
-GET foo
-bar
-DEL foo
-(1)
-GET foo
-(nil)
+#### SET foo bar
+#### OK
+#### GET foo
+#### bar
+#### DEL foo
+#### (1)
+#### GET foo
+#### (nil)
 
 ## 🛠 Roadmap
 
