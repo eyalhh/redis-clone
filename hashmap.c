@@ -71,12 +71,20 @@ void del_key(hashmap_t *hashmap, int key) {
 }
 
 void print_hashmap(hashmap_t *hashmap) {
+    int count = 0;
     printf("{");
     for (int i = 0; i < hashmap->cap; i++) {
         entry_t *current_entry = hashmap->arr[i];
         while (current_entry != NULL) {
-            printf(",%d:%s", current_entry->key, current_entry->value);
+            int len = strlen(current_entry->value);
+            if (current_entry->value[len-1] == '\n') current_entry->value[len-1] = '\0';
+            if (count == 0) {
+                printf("%d:%s", current_entry->key, current_entry->value);
+            } else {
+                printf(",%d:%s", current_entry->key, current_entry->value);
+            }
             current_entry = current_entry->next;
+            count++;
 
         }
     }
