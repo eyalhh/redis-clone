@@ -1,14 +1,17 @@
-#include "hashmap.h"
+#include "hashmap/hashmap.h"
 
-void test() {
+int main() {
 
     hashmap_t *hashmap = init_hashmap();
-    add_pair(hashmap, 212, "eyal");
-    add_pair(hashmap, 304, "roy");
-    add_pair(hashmap, 512, "maya");
+    add_pair(hashmap, "foo", "eyal");
+    add_pair(hashmap, "bar", "roy");
+    add_pair(hashmap, "baz", "maya");
     print_hashmap(hashmap);
-    char *name = get_value(hashmap, 212);
+    char *name = get_value(hashmap, "bar");
     printf("%s\n", name);
-    name = get_value(hashmap, 2020);
+    name = get_value(hashmap, "omg");
+    printf("%d\n",name == NULL);
+
+    return 0;
 
 }

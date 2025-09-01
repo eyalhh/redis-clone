@@ -8,9 +8,10 @@
 #define FALSE 0
 
 typedef int boolean;
+typedef unsigned long hash_t;
 
 typedef struct entry_s{
-    int key;
+    char *key;
     char *value;
     struct entry_s *next;
 } entry_t;
@@ -21,9 +22,9 @@ typedef struct {
     entry_t **arr;
 } hashmap_t;
 
-boolean add_pair(hashmap_t *hashmap, int key, char *value);
+boolean add_pair(hashmap_t *hashmap, char *key, char *value);
 void print_hashmap(hashmap_t *hashmap);
 hashmap_t *init_hashmap();
-char* get_value(hashmap_t *hashmap, int key);
-void del_key(hashmap_t *hashmap, int key);
+char* get_value(hashmap_t *hashmap, char *key);
+void del_key(hashmap_t *hashmap, char *key);
 

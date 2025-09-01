@@ -71,13 +71,11 @@ void main_loop(){
 
 
         // call each fucntion 
-        int key = atoi(args[1]);
+        char *key = args[1];
         char *value = args[2];
-        char *copy_value = calloc(strlen(value), sizeof(char));
         switch(current) {
             case SET:
-            strncpy(copy_value, value, strlen(value));
-            add_pair(hashmap, key, copy_value);
+            add_pair(hashmap, key, value);
             printf("the pair was added\n");
             print_hashmap(hashmap);
             break;
