@@ -1,4 +1,4 @@
-#include "hashmap.h"
+#include "hashmap/hashmap.h"
 #include "main.h"
 
 int main() {
