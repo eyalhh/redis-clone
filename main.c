@@ -30,6 +30,7 @@ void main_loop(){
 
         printf(">> ");
         fgets(cmd, sizeof(cmd), stdin);
+        cmd[strlen(cmd)-1] = '\0';
 
         token = strtok(cmd, " ");
 
