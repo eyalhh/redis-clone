@@ -12,3 +12,4 @@ typedef enum func{
 
 void free_args(char **args, int argCount);
 void main_loop();
+void server_loop();

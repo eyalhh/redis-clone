@@ -1,9 +1,10 @@
 #include "hashmap/hashmap.h"
+#include "networking/networking.h"
 #include "main.h"
 
 int main() {
 
-    main_loop();
+    server_loop();
     
     return 0;
 }
@@ -97,5 +98,26 @@ void main_loop(){
 
     }
 
+}
+
+void server_loop() {
+    int srv_fd = init_server();
+
+    while (TRUE) {
+        pid_t pid = fork();
+        if (pid == 0) {
+            int conn_fd = accept_new_client(srv_fd);
+
+            while (TRUE) {
+                char *req = get_next_request(conn_fd);
+                printf("%s\n", req);
+                if (req == NULL) break;
+                // do some eval
+                send_response(conn_fd, "wow bruh!", 9);
+            }
+
+            return;
+        }
+    }
 }
 
