@@ -4,7 +4,7 @@
 
 int main() {
 
-    server_loop();
+    main_loop();
     
     return 0;
 }
