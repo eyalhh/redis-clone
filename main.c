@@ -1,5 +1,3 @@
-#include "hashmap/hashmap.h"
-#include "networking/networking.h"
 #include "main.h"
 
 int main() {
@@ -35,105 +33,118 @@ void free_args(char **args, int argCount) {
 void main_loop(){
     getchar();
     hashmap_t *hashmap = init_hashmap();
-
-    command current; 
     char cmd[MAX_CMD_SIZE];
-    char *token;
-    char **args = malloc(MAX_ARGS_COUNT * sizeof(char*));
-    int argCount;
+
 
 
     while(TRUE){
-        argCount = 0;
 
         printf(">> ");
         fgets(cmd, sizeof(cmd), stdin);
         cmd[strlen(cmd)-1] = 0;
 
-        token = strtok(cmd, " ");
+        char *response = parse_request(hashmap, cmd);
+        printf("%s", response);
+    }
 
-        while(token != NULL){
-            if(argCount>=MAX_ARGS_COUNT){
-                printf("max args count execeded\n");
-                break;
-            }
-            args[argCount] = token;
-            token = strtok(NULL, " ");
-            argCount++;
+
+}
+
+char *parse_request(hashmap_t *hashmap, char *request) {
+
+    command current; 
+    char *token;
+    char **args = malloc(MAX_ARGS_COUNT * sizeof(char*));
+    int argCount;
+    char *response = calloc(1024, sizeof(char));
+
+
+    argCount = 0;
+
+
+    token = strtok(request, " ");
+
+
+    while(token != NULL){
+        if(argCount>=MAX_ARGS_COUNT){
+            strcpy(response, "max arguments exceeded\n");
+            return response;
         }
+        args[argCount] = token;
+        token = strtok(NULL, " ");
+        argCount++;
+    }
 
-        if(!strcmp("GET", args[0])) {
-            current = GET;
-            if (argCount < 2) {
-                printf("needs more args.\n");
-                continue;
-            }
-        } else if(!strcmp("SET", args[0])) {
-            current = SET;
-            if (argCount < 3) {
-                printf("needs more args.\n");
-                continue;
-            }
-        } else if(!strcmp("DEL", args[0])) {
-            current = DEL;
-            if (argCount < 2) {
-                printf("needs more args.\n");
-                continue;
-            }
-        } else if(!strcmp("EXIT", args[0])) {
-            current = EXIT;
-        } else {
-            printf("command not availabe\n");
-            continue;
+    if(!strcmp("GET", args[0])) {
+        current = GET;
+        if (argCount < 2) {
+            strcpy(response, "needs more args.\n");
+            return response;
         }
+    } else if(!strcmp("SET", args[0])) {
+        current = SET;
+        if (argCount < 3) {
+            strcpy(response, "needs more args.\n");
+            return response;
+        }
+    } else if(!strcmp("DEL", args[0])) {
+        current = DEL;
+        if (argCount < 2) {
+            strcpy(response, "needs more args.\n");
+            return response;
+        }
+    } else if(!strcmp("EXIT", args[0])) {
+        current = EXIT;
+    } else {
+        strcpy(response, "needs more args.\n");
+        return response;
+    }
 
 
 
-        // call each fucntion 
-        char *key = args[1];
-        char *value = args[2];
-        switch(current) {
-            case SET:
+    // call each fucntion 
+    char *key = args[1];
+    char *value = args[2];
+    switch(current) {
+        case SET:
             add_pair(hashmap, key, value);
             printf("the pair was added\n");
             print_hashmap(hashmap);
             break;
-            case GET:
+        case GET:
             print_hashmap(hashmap);
-            printf("the value is: %s\n", get_value(hashmap, key));
+            snprintf(response, 1023, "the value is: %s\n", get_value(hashmap, key));
             break;
-            case DEL:
+        case DEL:
             del_key(hashmap, key);
-            printf("the key was deleted.\n");
-            print_hashmap(hashmap);
+            strcpy(response, "the key was deleted.\n");
             break;
-            case EXIT:
-            printf("exiting...\n");
-            return;
-
-        }
+        case EXIT:
+            strcpy(response, "exiting...\n");
+            break;
 
     }
+
+    return response;
 
 }
 
 void server_loop() {
+
+    hashmap_t *hashmap = init_hashmap();
     int srv_fd = init_server();
+    printf("server listening on port 60004\n");
 
     while (TRUE) {
-        pid_t pid = fork();
-        if (pid == 0) {
-            int conn_fd = accept_new_client(srv_fd);
+        int conn_fd = accept_new_client(srv_fd);
 
-            while (TRUE) {
-                char *req = get_next_request(conn_fd);
-                printf("%s\n", req);
-                if (req == NULL) break;
-                // do some eval
-                send_response(conn_fd, "wow bruh!", 9);
-            }
-
-            return;
+        while (TRUE) {
+            char *req = get_next_request(conn_fd);
+            if (req == NULL) break;
+            printf("req incoming: %s\n", req);
+            char *res = parse_request(hashmap, req);
+            // do some eval
+            send_response(conn_fd, res, strlen(res));
         }
     }
 }
