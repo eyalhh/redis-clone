@@ -72,8 +72,14 @@ char* get_value(hashmap_t *hashmap, char *key) {
 
 void del_key(hashmap_t *hashmap, char *key) {
     entry_t *first_entry = hashmap->arr[hash((unsigned char*)key, hashmap->cap)];
-    if (first_entry == NULL || first_entry->key == key) {
-        hashmap->arr[hash((unsigned char*)key, hashmap->cap)] = NULL;
+    if (first_entry == NULL) {
+        return;
+    }
+    if(!strcmp(first_entry->key, key)){
+        if(first_entry->next != NULL)
+            hashmap->arr[hash((unsigned char*)key, hashmap->cap)] = first_entry->next;
+        else
+            hashmap->arr[hash((unsigned char*)key, hashmap->cap)] = NULL;
         return;
     }
     while (first_entry != NULL) {
