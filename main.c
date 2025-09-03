@@ -4,7 +4,22 @@
 
 int main() {
 
-    main_loop();
+    printf("Welcome to our redis clone! Do you want to use our cli version or web server ?, the web server's default port will be 6004\n (for cli press c, for web server press w)\n");
+    char c;
+    scanf(" %c", &c);
+
+    while (c != 'c' && c != 'w') {
+        printf("invalid answer.\n");
+        printf("press w or c:\n");
+        scanf(" %c", &c);
+    }
+
+    if (c == 'c') {
+        main_loop();
+        return 0;
+    }
+
+    server_loop();
     
     return 0;
 }
@@ -18,6 +33,7 @@ void free_args(char **args, int argCount) {
 }
 
 void main_loop(){
+    getchar();
     hashmap_t *hashmap = init_hashmap();
 
     command current; 
@@ -26,12 +42,13 @@ void main_loop(){
     char **args = malloc(MAX_ARGS_COUNT * sizeof(char*));
     int argCount;
 
+
     while(TRUE){
         argCount = 0;
 
         printf(">> ");
         fgets(cmd, sizeof(cmd), stdin);
-        cmd[strlen(cmd)-1] = '\0';
+        cmd[strlen(cmd)-1] = 0;
 
         token = strtok(cmd, " ");
 
