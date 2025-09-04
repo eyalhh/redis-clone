@@ -1,7 +1,7 @@
 #include <string.h>
 #include <pthread.h>
-#include "../pkg/hashmap/hashmap.h"
 #include "../pkg/networking/networking.h"
+#include "../pkg/aof/aof.h"
 
 #define MAX_ARGS_COUNT 10
 #define MAX_CMD_SIZE 1024

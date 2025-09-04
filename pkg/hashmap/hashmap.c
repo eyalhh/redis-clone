@@ -38,11 +38,6 @@ entry_t *new_entry(char *key, char *value) {
 
 boolean add_pair(hashmap_t *hashmap, char *key, char *value) {
 
-    char *cmd = calloc(1024, sizeof(char));
-    snprintf(cmd, 1023, "SET %s %s\n", key, value);
-    aof_append(cmd);
-    free(cmd);
-
     if (hashmap->len == hashmap->cap) {
         hashmap->cap *= 2;
         hashmap->arr = calloc(hashmap->cap, sizeof(entry_t *));
@@ -77,11 +72,6 @@ char* get_value(hashmap_t *hashmap, char *key) {
 }
 
 void del_key(hashmap_t *hashmap, char *key) {
-
-    char *cmd = calloc(1024, sizeof(char));
-    snprintf(cmd, 1023, "DEL %s\n", key);
-    aof_append(cmd);
-    free(cmd);
 
     entry_t *first_entry = hashmap->arr[hash((unsigned char*)key, hashmap->cap)];
     if (first_entry == NULL) {

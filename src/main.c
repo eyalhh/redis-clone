@@ -3,9 +3,32 @@
 hashmap_t *hashmap;
 pthread_mutex_t lock;
 
+void add_pair_with_aof(hashmap_t *hashmap, char *key, char *value) {
+
+    char *cmd = calloc(1024, sizeof(char));
+    snprintf(cmd, 1023, "SET %s %s\n", key, value);
+    aof_append(cmd);
+    free(cmd);
+
+    add_pair(hashmap, key, value);
+
+
+}
+
+void del_key_with_aof(hashmap_t *hashmap, char *key) {
+
+    char *cmd = calloc(1024, sizeof(char));
+    snprintf(cmd, 1023, "DEL %s\n", key);
+    aof_append(cmd);
+    free(cmd);
+
+    del_key(hashmap, key);
+}
+
 int main() {
 
     hashmap = init_hashmap();
+    aof_load(hashmap);
 
     printf("Welcome to our redis clone! Do you want to use our cli version or web server ?, the web server's default port will be 6004\n (for cli press c, for web server press w)\n");
     char c;
@@ -27,14 +50,6 @@ int main() {
     server_loop();
     
     return 0;
-}
-
-
-void free_args(char **args, int argCount) {
-    for (int i = 0; i < argCount; i++) {
-        free(args[i]);
-    }
-    free(args);
 }
 
 void main_loop(){
@@ -113,13 +128,13 @@ char *parse_request(pthread_mutex_t *lock, hashmap_t *hashmap, char *request) {
     switch(current) {
         case SET:
             if (lock == NULL) {
-                add_pair(hashmap, key, value);
+                add_pair_with_aof(hashmap, key, value);
                 strcpy(response, "the pair was added\n");
                 return response;
 
             }
             pthread_mutex_lock(lock);
-            add_pair(hashmap, key, value);
+            add_pair_with_aof(hashmap, key, value);
             pthread_mutex_unlock(lock);
             strcpy(response, "the pair was added\n");
             return response;
@@ -134,12 +149,12 @@ char *parse_request(pthread_mutex_t *lock, hashmap_t *hashmap, char *request) {
             return response;
         case DEL:
             if (lock == NULL) {
-                del_key(hashmap, key);
+                del_key_with_aof(hashmap, key);
                 strcpy(response, "the key was deleted.\n");
                 return response;
             }
             pthread_mutex_lock(lock);
-            del_key(hashmap, key);
+            del_key_with_aof(hashmap, key);
             pthread_mutex_unlock(lock);
             strcpy(response, "the key was deleted.\n");
             return response;
