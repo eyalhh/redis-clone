@@ -8,6 +8,18 @@ int main() {
     return 0;
 }
 
+void* ttl(void* args){
+    int sec = *((int*) args)
+    hashmap_t* hashmap = (hashmap_t*)(args+sizeof(int*))
+    char* key = (char*) (args+sizeof(int*) + sizeof(hashmap_t*));
+
+    sleep(sec);
+    // lock mutex
+    del_key(hashmap, key);
+    // free mutex
+    return;
+ 
+}
 
 void free_args(char **args, int argCount) {
     for (int i = 0; i < argCount; i++) {
@@ -71,15 +83,33 @@ void main_loop(){
 
 
 
-        // call each fucntion 
+        // call each fucntion
         char *key = args[1];
         char *value = args[2];
+        pthread_t t_id;
+
         switch(current) {
             case SET:
-            add_pair(hashmap, key, value);
-            printf("the pair was added\n");
-            print_hashmap(hashmap);
-            break;
+              // checks for flags
+              for(int i=3; i<argscount; i++){
+                  if(!strcmp(args[i], "--ttl")){
+                      // checks whether there is arg after -ttl
+                      if(i == argscount){
+                          printf("needs more args! --help\n");
+                          break;
+                      }
+                      // TODO: check if the arg is a number
+                      argsForThread_t* argsToFunc = (argsForThread_t*)malloc(sizeof(argsForThread_t));
+                      argsToFunc->key = key;
+                      argsToFunc->hashmap = hashmap;
+                      argsToFunc->sec = atoi(args[i+1]);
+                      pthread_create(argsToFunc, NULL, ttl, (void*)argsToFunc);
+                  }
+              }
+              add_pair(hashmap, key, value);
+              printf("the pair was added\n");
+              print_hashmap(hashmap);
+              break;
             case GET:
             print_hashmap(hashmap);
             printf("the value is: %s\n", get_value(hashmap, key));
