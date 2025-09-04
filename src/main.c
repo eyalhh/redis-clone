@@ -11,8 +11,6 @@ void add_pair_with_aof(hashmap_t *hashmap, char *key, char *value) {
     free(cmd);
 
     add_pair(hashmap, key, value);
-
-
 }
 
 void del_key_with_aof(hashmap_t *hashmap, char *key) {
@@ -23,6 +21,20 @@ void del_key_with_aof(hashmap_t *hashmap, char *key) {
     free(cmd);
 
     del_key(hashmap, key);
+}
+
+void* ttl(void* args){
+
+    argsForThread_t* data = (argsForThread_t*) args;
+    int sec = data->sec;
+    hashmap_t* hashmap = data->hashmap;
+    char* key = data->key;
+
+    sleep(sec);
+    pthread_mutex_lock(&lock);
+    del_key_with_aof(hashmap, key);
+    pthread_mutex_unlock(&lock);
+    return NULL;
 }
 
 int main() {
@@ -63,14 +75,14 @@ void main_loop(){
         fgets(cmd, sizeof(cmd), stdin);
         cmd[strlen(cmd)-1] = 0;
 
-        char *response = parse_request(NULL, hashmap, cmd);
+        char *response = parse_request(hashmap, cmd);
         printf("%s", response);
     }
 
 
 }
 
-char *parse_request(pthread_mutex_t *lock, hashmap_t *hashmap, char *request) {
+char *parse_request(hashmap_t *hashmap, char *request) {
 
     command current; 
     char *token;
@@ -122,40 +134,42 @@ char *parse_request(pthread_mutex_t *lock, hashmap_t *hashmap, char *request) {
 
 
 
-    // call each fucntion 
     char *key = args[1];
     char *value = args[2];
+    // call each fucntion
     switch(current) {
         case SET:
-            if (lock == NULL) {
-                add_pair_with_aof(hashmap, key, value);
-                strcpy(response, "the pair was added\n");
-                return response;
-
-            }
-            pthread_mutex_lock(lock);
+            pthread_mutex_lock(&lock);
             add_pair_with_aof(hashmap, key, value);
-            pthread_mutex_unlock(lock);
+            pthread_mutex_unlock(&lock);
+            for(int i=3; i<argCount; i++){
+                  if(!strcmp(args[i], "--ttl")){
+                      // checks whether there is arg after -ttl
+                      if(i == argCount){
+                          strcpy(response, "pair was added\n need secs for ttl tho --help\n");
+                          return response;
+                      }
+                      pthread_t t_id;
+                      // TODO: check if the arg is a number
+                      argsForThread_t* argsToFunc = (argsForThread_t*)malloc(sizeof(argsForThread_t));
+                      argsToFunc->key = key;
+                      argsToFunc->hashmap = hashmap;
+                      argsToFunc->sec = atoi(args[i+1]);
+                      pthread_create(&t_id, NULL, ttl, (void*)argsToFunc);
+                  }
+            }
             strcpy(response, "the pair was added\n");
             return response;
+
         case GET:
-            if (lock == NULL) {
-                snprintf(response, 1023, "the value is: %s\n", get_value(hashmap, key));
-                return response;
-            }
-            pthread_mutex_lock(lock);
+            pthread_mutex_lock(&lock);
             snprintf(response, 1023, "the value is: %s\n", get_value(hashmap, key));
-            pthread_mutex_unlock(lock);
+            pthread_mutex_unlock(&lock);
             return response;
         case DEL:
-            if (lock == NULL) {
-                del_key_with_aof(hashmap, key);
-                strcpy(response, "the key was deleted.\n");
-                return response;
-            }
-            pthread_mutex_lock(lock);
+            pthread_mutex_lock(&lock);
             del_key_with_aof(hashmap, key);
-            pthread_mutex_unlock(lock);
+            pthread_mutex_unlock(&lock);
             strcpy(response, "the key was deleted.\n");
             return response;
         case EXIT:
@@ -163,9 +177,7 @@ char *parse_request(pthread_mutex_t *lock, hashmap_t *hashmap, char *request) {
             return response;
 
     }
-
     return response;
-
 }
 
 void *handle_client(void *arg) {
@@ -175,7 +187,7 @@ void *handle_client(void *arg) {
     char *req = get_next_request(conn_fd);
     if (req == NULL) return NULL;
     printf("req incoming: %s\n", req);
-    char *res = parse_request(&lock, hashmap, req);
+    char *res = parse_request(hashmap, req);
     send_response(conn_fd, res, strlen(res));
 
     return malloc(1);
