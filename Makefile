@@ -1,6 +1,6 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Wextra -O2 -I./src -I./pkg/hashmap -I./pkg/networking
+CFLAGS := -Wall -Wextra -O2 -I./src -I./pkg/hashmap -I./pkg/networking -I./pkg/aof
 
 # Directories
 SRC_DIR := src
@@ -16,7 +16,8 @@ CLIENT_BIN := $(BIN_DIR)/demo-client
 # Source files
 SERVER_SRCS := $(SRC_DIR)/main.c \
                $(PKG_DIR)/hashmap/hashmap.c \
-               $(PKG_DIR)/networking/networking.c
+               $(PKG_DIR)/networking/networking.c \
+               $(PKG_DIR)/aof/aof.c
 
 CLIENT_SRCS := $(CLIENT_DIR)/democlient.c
 
