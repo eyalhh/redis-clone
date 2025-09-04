@@ -51,9 +51,15 @@ boolean add_pair(hashmap_t *hashmap, char *key, char *value) {
         return TRUE;
     }
 
+    while(current_entry->next!=NULL){
+        if(!strcmp(current_entry->key, key)){
+            current_entry->next = new_entry(key, value);
+            hashmap->len++;
+            return TRUE;
+        }
+    }
     current_entry->next = new_entry(key, value);
     hashmap->len++;
-
     return TRUE;
     
 }
@@ -80,6 +86,7 @@ void del_key(hashmap_t *hashmap, char *key) {
     if (!strcmp(first_entry->key, key)) {
         hashmap->arr[hash((unsigned char*)key, hashmap->cap)] = first_entry->next;
         free(first_entry);
+        (hashmap->len)--;
         return;
     }
     while (first_entry != NULL) {
@@ -87,6 +94,7 @@ void del_key(hashmap_t *hashmap, char *key) {
             entry_t *del_entry = first_entry->next;
             first_entry->next = first_entry->next->next;
             free(del_entry);
+            (hashmap->len)--;
             return;
         }
     }
