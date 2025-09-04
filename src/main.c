@@ -61,14 +61,14 @@ void main_loop(){
         fgets(cmd, sizeof(cmd), stdin);
         cmd[strlen(cmd)-1] = 0;
 
-        char *response = parse_request(NULL, hashmap, cmd);
+        char *response = parse_request(hashmap, cmd);
         printf("%s", response);
     }
 
 
 }
 
-char *parse_request(pthread_mutex_t *lock, hashmap_t *hashmap, char *request) {
+char *parse_request(hashmap_t *hashmap, char *request) {
 
     command current; 
     char *token;
@@ -125,11 +125,9 @@ char *parse_request(pthread_mutex_t *lock, hashmap_t *hashmap, char *request) {
     // call each fucntion
     switch(current) {
         case SET:
-            pthread_mutex_lock(lock);
-            printf("hi\n");
-            fflush(stdout);
+            pthread_mutex_lock(&lock);
             add_pair(hashmap, key, value);
-            pthread_mutex_unlock(lock);
+            pthread_mutex_unlock(&lock);
             for(int i=3; i<argCount; i++){
                   if(!strcmp(args[i], "--ttl")){
                       // checks whether there is arg after -ttl
@@ -150,14 +148,14 @@ char *parse_request(pthread_mutex_t *lock, hashmap_t *hashmap, char *request) {
             return response;
 
         case GET:
-            pthread_mutex_lock(lock);
+            pthread_mutex_lock(&lock);
             snprintf(response, 1023, "the value is: %s\n", get_value(hashmap, key));
-            pthread_mutex_unlock(lock);
+            pthread_mutex_unlock(&lock);
             return response;
         case DEL:
-            pthread_mutex_lock(lock);
+            pthread_mutex_lock(&lock);
             del_key(hashmap, key);
-            pthread_mutex_unlock(lock);
+            pthread_mutex_unlock(&lock);
             strcpy(response, "the key was deleted.\n");
             return response;
         case EXIT:
@@ -177,7 +175,7 @@ void *handle_client(void *arg) {
     char *req = get_next_request(conn_fd);
     if (req == NULL) return NULL;
     printf("req incoming: %s\n", req);
-    char *res = parse_request(&lock, hashmap, req);
+    char *res = parse_request(hashmap, req);
     send_response(conn_fd, res, strlen(res));
 
     return malloc(1);

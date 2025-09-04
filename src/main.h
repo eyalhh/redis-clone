@@ -22,4 +22,4 @@ typedef struct argsForThread_s{
 void free_args(char **args, int argCount);
 void main_loop();
 void server_loop();
-char *parse_request(pthread_mutex_t *lock, hashmap_t *, char *);
+char *parse_request(hashmap_t *, char *);
