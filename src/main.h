@@ -1,5 +1,7 @@
 #include <string.h>
 #include <pthread.h>
+#include "../pkg/hashmap/hashmap.h"
+#include "../pkg/networking/networking.h"
 
 #define MAX_ARGS_COUNT 10
 #define MAX_CMD_SIZE 1024
@@ -19,3 +21,5 @@ typedef struct argsForThread_s{
 
 void free_args(char **args, int argCount);
 void main_loop();
+void server_loop();
+char *parse_request(pthread_mutex_t *lock, hashmap_t *, char *);

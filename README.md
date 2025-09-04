@@ -47,5 +47,5 @@ make
 * [ ] Support for more commands (`EXISTS`, `KEYS`, etc.)
 * [ ] String expiry with TTL
 * [ ] Persistent storage (AOF / RDB-like)
-* [ ] Network server mode
+* [X] Network server mode
 
