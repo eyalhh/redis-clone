@@ -44,8 +44,8 @@ make
 
 ## 🛠 Roadmap
 
-* [] Support for more commands (`EXISTS`, `KEYS`, etc.)
-* [] String expiry with TTL
-* [] Persistent storage (AOF / RDB-like)
+* [ ] Support for more commands (`EXISTS`, `KEYS`, etc.)
+* [ ] String expiry with TTL
+* [ ] Persistent storage (AOF / RDB-like)
 * [X] Network server mode
 
