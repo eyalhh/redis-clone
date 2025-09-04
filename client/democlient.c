@@ -40,7 +40,7 @@ int main() {
     printf("Connected to %s:%d\n", server_ip, server_port);
 
     // 4. Send data
-    const char *msg = "Hello from client\n";
+    const char *msg = "SET EYAL FOO\n";
     send(sockfd, msg, strlen(msg), 0);
 
     // 5. Receive data
