@@ -1,6 +1,6 @@
 #include <string.h>
-#include "hashmap/hashmap.h"
-#include "networking/networking.h"
+#include "../pkg/hashmap/hashmap.h"
+#include "../pkg/networking/networking.h"
 
 #define MAX_ARGS_COUNT 10
 #define MAX_CMD_SIZE 1024
