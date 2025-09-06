@@ -40,7 +40,12 @@ boolean add_pair(hashmap_t *hashmap, char *key, char *value) {
 
     if (hashmap->len == hashmap->cap) {
         hashmap->cap *= 2;
-        hashmap->arr = calloc(hashmap->cap, sizeof(entry_t *));
+        entry_t* new_arr = calloc(hashmap->cap, sizeof(entry_t *));
+
+
+        for(int i=0; i<hashmap->len; i++)
+            new_arr[hash((unsigned char*)(hashmap->arr[i])->key, hashmap->cap)] = (hashmap->arr)[i];
+
     }
 
     entry_t *current_entry = (hashmap->arr)[hash((unsigned char*)key, hashmap->cap)];
@@ -53,7 +58,7 @@ boolean add_pair(hashmap_t *hashmap, char *key, char *value) {
 
     while(current_entry->next!=NULL){
         if(!strcmp(current_entry->key, key)){
-            current_entry->next = new_entry(key, value);
+            current_entry->value = copy_string(value);
             hashmap->len++;
             return TRUE;
         }

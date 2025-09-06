@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define INITIAL_SIZE 100
+#define INITIAL_SIZE 2
 #define TRUE 1
 #define FALSE 0
 
