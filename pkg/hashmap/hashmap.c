@@ -45,6 +45,9 @@ boolean add_pair(hashmap_t *hashmap, char *key, char *value) {
 
         for(int i=0; i<hashmap->len; i++)
             new_arr[hash((unsigned char*)(hashmap->arr[i])->key, hashmap->cap)] = (hashmap->arr)[i];
+        
+        free(hashmap->arr);
+        hashmap->arr = new_arr;
 
     }
 
