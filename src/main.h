@@ -11,7 +11,8 @@ typedef enum func{
   SET,   // 1
   DEL,   // 2
   EXIT,  // 3
-  EXISTS // 4
+  EXISTS,// 4
+  PRINT  // 5
 } command;
 
 typedef struct argsForThread_s{

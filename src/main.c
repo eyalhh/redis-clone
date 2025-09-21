@@ -131,6 +131,9 @@ char *parse_request(hashmap_t *hashmap, char *request) {
             strcpy(response, "needs more args.\n");
             return response;
         }
+    }else if(!strcmp("PRINT", args[0])){
+        current = PRINT;
+
     } else if(!strcmp("EXIT", args[0])) {
         current = EXIT;
     } else {
@@ -190,7 +193,12 @@ char *parse_request(hashmap_t *hashmap, char *request) {
             snprintf(response, 1023, "the key %s %s exist\n", args[1], exists(hashmap, key) ? "does" : "doesn't");
             pthread_mutex_unlock(&lock);
             return response;
-
+        case PRINT:
+            pthread_mutex_lock(&lock);
+            print_hashmap(hashmap);
+            pthread_mutex_unlock(&lock);
+            return "";
+            return NULL;
 
         case EXIT:
             strcpy(response, "exiting...\n");
