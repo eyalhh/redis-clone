@@ -24,5 +24,17 @@ void aof_load(hashmap_t *hashmap) {
         }
 
     }
+
+    fclose(fp);
+    // optimizing the aof file , so it wont get that big 
+    fp = fopen(AOF_FILENAME, "w");
+    entry_t *current;
+    for (int i = 0; i < hashmap->cap; i++) {
+        current = hashmap->arr[i];
+        while (current != NULL) {
+            fprintf(fp, "SET %s %s\n", current->key, current->value);
+            current = current->next;
+        }
+    }
     fclose(fp);
 }
