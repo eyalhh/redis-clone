@@ -7,10 +7,11 @@
 #define MAX_CMD_SIZE 1024
 
 typedef enum func{
-  GET, // 0
-  SET, // 1
-  DEL, // 2
-  EXIT // 3
+  GET,   // 0
+  SET,   // 1
+  DEL,   // 2
+  EXIT,  // 3
+  EXISTS // 4
 } command;
 
 typedef struct argsForThread_s{

@@ -27,4 +27,4 @@ void print_hashmap(hashmap_t *hashmap);
 hashmap_t *init_hashmap(int cap);
 char* get_value(hashmap_t *hashmap, char *key);
 void del_key(hashmap_t *hashmap, char *key);
-
+int exists(hashmap_t *hashmap, char *key);

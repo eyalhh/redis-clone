@@ -125,6 +125,12 @@ char *parse_request(hashmap_t *hashmap, char *request) {
             strcpy(response, "needs more args.\n");
             return response;
         }
+    } else if(!strcmp("EXISTS", args[0])){
+        current = EXISTS;
+        if (argCount < 2) {
+            strcpy(response, "needs more args.\n");
+            return response;
+        }
     } else if(!strcmp("EXIT", args[0])) {
         current = EXIT;
     } else {
@@ -177,6 +183,15 @@ char *parse_request(hashmap_t *hashmap, char *request) {
             pthread_mutex_unlock(&lock);
             strcpy(response, "the key was deleted.\n");
             return response;
+        
+        case EXISTS:
+            key = args[1];
+            pthread_mutex_lock(&lock);
+            snprintf(response, 1023, "the key %s %s exist\n", args[1], exists(hashmap, key) ? "does" : "doesn't");
+            pthread_mutex_unlock(&lock);
+            return response;
+
+
         case EXIT:
             strcpy(response, "exiting...\n");
             return response;

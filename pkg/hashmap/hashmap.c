@@ -100,6 +100,20 @@ char* get_value(hashmap_t *hashmap, char *key) {
     }
 }
 
+int exists(hashmap_t *hashmap, char *key) {
+    entry_t* ent = hashmap->arr[hash((unsigned char*)key, hashmap->cap)]; // getting the right entry chain
+ 
+    //going over the chain to look for the right key
+    while(TRUE){
+      if(ent==NULL) // in case of some wrongdoing
+        return 0; 
+      if(!strcmp(ent->key, key))
+        return 1;
+      ent = ent->next;
+    }
+}
+
+
 void del_key(hashmap_t *hashmap, char *key) {
 
     entry_t *first_entry = hashmap->arr[hash((unsigned char*)key, hashmap->cap)];
