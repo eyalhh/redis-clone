@@ -105,7 +105,7 @@ int exists(hashmap_t *hashmap, char *key) {
  
     //going over the chain to look for the right key
     while(TRUE){
-      if(ent==NULL) // in case of some wrongdoing
+      if(ent==NULL)
         return 0; 
       if(!strcmp(ent->key, key))
         return 1;
