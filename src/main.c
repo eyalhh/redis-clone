@@ -39,7 +39,7 @@ void* ttl(void* args){
 
 int main() {
 
-    hashmap = init_hashmap();
+    hashmap = init_hashmap(INITIAL_SIZE);
     aof_load(hashmap);
 
     printf("Welcome to our redis clone! Do you want to use our cli version or web server ?, the web server's default port will be 6004\n (for cli press c, for web server press w)\n");
@@ -134,11 +134,13 @@ char *parse_request(hashmap_t *hashmap, char *request) {
 
 
 
-    char *key = args[1];
-    char *value = args[2];
+    char *key;
+    char *value;
     // call each fucntion
     switch(current) {
         case SET:
+            key = args[1];
+            value = args[2];
             pthread_mutex_lock(&lock);
             add_pair_with_aof(hashmap, key, value);
             pthread_mutex_unlock(&lock);
@@ -162,11 +164,14 @@ char *parse_request(hashmap_t *hashmap, char *request) {
             return response;
 
         case GET:
+            key = args[1];
+            value = args[2];
             pthread_mutex_lock(&lock);
             snprintf(response, 1023, "the value is: %s\n", get_value(hashmap, key));
             pthread_mutex_unlock(&lock);
             return response;
         case DEL:
+            key = args[1];
             pthread_mutex_lock(&lock);
             del_key_with_aof(hashmap, key);
             pthread_mutex_unlock(&lock);

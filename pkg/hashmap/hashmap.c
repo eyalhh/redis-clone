@@ -9,9 +9,9 @@ hash_t hash(unsigned char *key, int cap) { // djb2 hash
 
 }
 
-hashmap_t *init_hashmap() {
+hashmap_t *init_hashmap(int cap) {
     hashmap_t *hashmap = calloc(1 ,sizeof(hashmap_t));
-    hashmap->cap = INITIAL_SIZE;
+    hashmap->cap = cap;
     hashmap->len = 0;
     hashmap->arr = calloc(hashmap->cap, sizeof(entry_t *));
     return hashmap;
@@ -38,17 +38,24 @@ entry_t *new_entry(char *key, char *value) {
 
 boolean add_pair(hashmap_t *hashmap, char *key, char *value) {
 
-    if (hashmap->len == hashmap->cap) {
-        hashmap->cap *= 2;
-        entry_t* new_arr = calloc(hashmap->cap, sizeof(entry_t *));
+
+    if (hashmap->len >= hashmap->cap) {
+        hashmap_t *new_hashmap = init_hashmap(hashmap->cap * 2);
 
 
-        for(int i=0; i<hashmap->len; i++)
-            new_arr[hash((unsigned char*)(hashmap->arr[i])->key, hashmap->cap)] = (hashmap->arr)[i];
+
+        for(int i=0; i<hashmap->cap; i++) {
+            entry_t *current = hashmap->arr[i];
+            while (current != NULL) {
+                add_pair(new_hashmap, current->key, current->value);
+                current = current->next;
+            }
+
+
+        }
         
         free(hashmap->arr);
-        hashmap->arr = new_arr;
-
+        *hashmap = *new_hashmap;
     }
 
     entry_t *current_entry = (hashmap->arr)[hash((unsigned char*)key, hashmap->cap)];
@@ -59,14 +66,22 @@ boolean add_pair(hashmap_t *hashmap, char *key, char *value) {
         return TRUE;
     }
 
-    while(current_entry->next!=NULL){
+    entry_t *last_entry;
+
+    while(current_entry!=NULL){
+        if (current_entry->next == NULL) {
+            last_entry = current_entry;
+        }
+
+
         if(!strcmp(current_entry->key, key)){
             current_entry->value = copy_string(value);
-            hashmap->len++;
             return TRUE;
         }
+        current_entry = current_entry->next;
+
     }
-    current_entry->next = new_entry(key, value);
+    last_entry->next = new_entry(key, value);
     hashmap->len++;
     return TRUE;
     
