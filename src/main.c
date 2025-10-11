@@ -221,6 +221,9 @@ void *handle_client(void *arg) {
     return malloc(1);
 }
 
+// client 1 - > SET EYAL FOO
+// client 2 -> SET EYAL KEY
+
 void server_loop() {
 
     pthread_mutex_init(&lock, NULL);
